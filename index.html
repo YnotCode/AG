@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+    #name{
+    position: absolute;
+    top: 200px;
+    left: 500px;
+    }
+    #code{
+    position: absolute;
+    top: 300px;
+    left: 500px;
+    }
+    #sign{
+    position:absolute;
+    top: 400px;
+    left: 530px;
+    height: 40px;
+    width: 100px;
+    color: red;
+    background-color: green;
+    font-size: 20px;
+    }
+    #swap{
+    position:absolute;
+    top: 450px;
+    left: 535px;
+    height: 40px;
+    width: 90px;
+    color: red;
+    background-color: green;
+    font-size: 15px;
+    }
+    #header{
+    position: absolute;
+    top: 100px;
+    left: 380px;
+    color: black;
+    font-weight: bold;
+    font-family: "Courier New";
+    font-size: 30px;
+    }
+    #box{
+    outline-style: solid;
+    outline-width: 5px;
+    outline-color: black;
+    width: 550px;
+    height: 500px;
+    position: absolute;
+    top: 20px;
+    left: 350px;
+    }
+    #nameHead{
+    position: absolute;
+    top: 200px;
+    left: 380px;
+    color: black;
+    font-family: "Courier New";
+    font-size: 20px;
+    }
+    #passHead{
+    position: absolute;
+    top: 100px;
+    left: 1px;
+    color: black;
+    font-family: "Courier New";
+    font-size: 20px;
+    }
+    #blocker{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 1px;
+    height: 1px;
+    
+    }
+    
+    
+    </style> 
+  </head>
+  <body>
+  <div id="box"> </div>
+  <input id="name" type="text"/>
+  <input id="code" type="text"/>
+  <button id="sign" onclick="choose()">SIGN IN</button>
+  <button id="swap" onclick="changeHtml()">Or Sign Up</button>
+  <h id="header">LOG IN TO OUR FREE SERVICE: </h>
+  <t id="nameHead">Email:<t>
+  <t2 id="passHead">Password:<t2>
+  <div id="blocker"></div>
+  
+  <script>
+  var main = document.getElementById("sign");
+  var change = document.getElementById("swap");
+  var head = document.getElementById("header");
+  var a = document.getElementById("name").value;
+  var b = document.getElementById("code").value;
+  var block = document.getElementById("blocker").value;
+  var tyoe;
+  
+  
+  //function for checking for sign in with google apps sc
+  function checker(){
+ 
+  google.script.run.withFailureHandler(function(err){
+console.log("With Failure Handler",err);}).withSuccessHandler(function(res){
+// event when data recieved here:
+if (res == 1){
+console.log("yes");
+head.innerHTML = "SIGN IN SUCCESSFUL!";
+head.style.color = "green";
+main.innerHTML = "GO ON";
+}
+else{
+console.log("no");
+head.innerHTML = "Incorrect email or password";
+head.style.color = "red";
+}
+
+
+}).myFunction(a,b,4);
+  
+  }
+  
+  
+ // code for choosing what to execute based upon button text value
+  function choose(){
+  if(main.innerHTML == "SIGN UP"){
+   a = document.getElementById("name").value;
+   b = document.getElementById("code").value;
+  google.script.run.myFunction(a,b,0);
+  head.innerHTML = "YOU'RE ALL SET!";
+  head.style.color = "green";
+  }
+  else if(main.innerHTML == "SIGN IN"){
+   a = document.getElementById("name").value;
+   b = document.getElementById("code").value;
+  checker();
+  }
+ 
+  
+  }
+  
+  
+  // code for physically changing button text from sign up, sign in, and so on...
+  function changeHtml(){
+  if(main.innerHTML == "SIGN IN"){
+  main.innerHTML = "SIGN UP";
+  change.innerHTML = "Or Sign In";
+  head.innerHTML = "SIGN UP FOR OUR FREE SERVICE:";
+  head.style.color = "black";
+ 
+  }
+  else if (main.innerHTML == "SIGN UP"){
+  main.innerHTML = "SIGN IN";
+  change.innerHTML = "Or Sign Up";
+  head.innerHTML = "LOG IN TO OUR FREE SERVICE:";
+  head.style.color = "black";
+  }
+  }
+  
+  
+  </script>
+  
+  </body>
+
+</html>
+
+
