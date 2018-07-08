@@ -62,60 +62,124 @@
     }
     #passHead{
     position: absolute;
-    top: 100px;
-    left: 1px;
+    top: 300px;
+    left: 380px;
     color: black;
     font-family: "Courier New";
     font-size: 20px;
     }
-    #blocker{
+    #lobby{
     position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 1px;
-    height: 1px;
-    
+    top: 10px; 
+    left: 600px;
+    width: 500px;
+    height: 500px;
     }
+    #startSearch{
+    position: absolute;
+    top: 300px;
+    left: 300px;
+    width: 110px;
+    height: 60px;
+    color: red;
+    background-color: green;
+    font-size: 20px;
+    display: none;
+    }
+    #playerHeadOne{
+    position: absolute;
+    top: 130px;
+    left: 650px;
+    color: black;
+    font-weight: bold;
+    font-family: "Courier New";
+    font-size: 30px;
+    }
+    #playerHeadTwo{
+    position: absolute;
+    top: 260px;
+    left: 650px;
+    color: black;
+    font-weight: bold;
+    font-family: "Courier New";
+    font-size: 30px;
+    }
+    #playerHeadThree{
+    position: absolute;
+    top: 390px;
+    left: 650px;
+    color: black;
+    font-weight: bold;
+    font-family: "Courier New";
+    font-size: 30px;
+    }
+    #tableHead{
+    position: absolute;
+    top: 50px;
+    left: 640px;
+    color: black;
+    font-weight: bold;
+    font-family: "Courier New";
+    font-size: 20px;
+    }
+    
     
     
     </style> 
   </head>
   <body>
+  
+  
   <div id="box"> </div>
+  <img  id="lobby" src="https://github.com/YnotCode/AG/blob/master/blanco.png?raw=true"/>
   <input id="name" type="text"/>
   <input id="code" type="text"/>
   <button id="sign" onclick="choose()">SIGN IN</button>
   <button id="swap" onclick="changeHtml()">Or Sign Up</button>
   <h id="header">LOG IN TO OUR FREE SERVICE: </h>
-  <t id="nameHead">Email:<t>
-  <t2 id="passHead">Password:<t2>
-  <div id="blocker"></div>
+  <t id="nameHead">Username:</t>
+  <t id="passHead">Password:</t>
+
+  
+  <button id="startSearch" onclick="search()">FIND A MATCH</button>
+  <t id="playerHeadOne"></t>
+  <t id="playerHeadTwo"></t> 
+  <t id="playerHeadThree"></t>
+  <t id="tableHead"></t>
+  <img id="R1" src="https://github.com/YnotCode/AG/blob/master/blanco.png?raw=true"/>
+  
   
   <script>
+  // variables for storing html elements
   var main = document.getElementById("sign");
   var change = document.getElementById("swap");
   var head = document.getElementById("header");
   var a = document.getElementById("name").value;
   var b = document.getElementById("code").value;
-  var block = document.getElementById("blocker").value;
+  //loop variable for running recheck() repeatedly and stopping if necessary
+  var loop = 0;
+  //tyoe stores returned username for player
   var tyoe;
+  //others stores other usernames of players in match
   
-  
-  //function for checking for sign in with google apps sc
-  function checker(){
+  var table = document.getElementById("lobby");
+  var find = document.getElementById("startSearch");
  
+  //function for checking for sign in with google apps script
+  function checker(){
   google.script.run.withFailureHandler(function(err){
 console.log("With Failure Handler",err);}).withSuccessHandler(function(res){
 // event when data recieved here:
-if (res == 1){
+if (res != 0){
 console.log("yes");
-head.innerHTML = "SIGN IN SUCCESSFUL!";
+head.innerHTML = "Hi " + res;
+tyoe = res;
 head.style.color = "green";
 main.innerHTML = "GO ON";
 }
 else{
 console.log("no");
-head.innerHTML = "Incorrect email or password";
+head.innerHTML = "Incorrect username or password";
 head.style.color = "red";
 }
 
@@ -139,7 +203,9 @@ head.style.color = "red";
    b = document.getElementById("code").value;
   checker();
   }
- 
+  else{
+  transition("to lobby");
+  }
   
   }
   
@@ -160,6 +226,92 @@ head.style.color = "red";
   head.style.color = "black";
   }
   }
+  
+  
+  // function for transitioning from game states (i.e. login to lobby, lobby to game, game to lobby)
+  function transition(where){
+  
+  if (where == "to lobby"){
+  main.style.display = "none";
+  change.style.display = "none";
+  document.getElementById("box").style.outlineColor = "white";
+  head.innerHTML = tyoe + " dashboard";
+  head.style.left = "200px";
+  document.getElementById("nameHead").style.display = "none";
+  document.getElementById("passHead").style.display = "none";
+  document.getElementById("name").style.display = "none";
+  document.getElementById("code").style.display = "none";
+  document.getElementById("tableHead").innerHTML = "Match Play Table";
+  table.src = "https://github.com/YnotCode/AG/blob/master/Lobby%20Table.png?raw=true";
+  find.style.display = "initial";
+  google.script.run.myFunction(tyoe,0,7);
+  }
+  
+  if (where == "to Game"){
+  find.style.display = "none";
+  head.innerHTML = "";
+  table.src = "https://github.com/YnotCode/AG/blob/master/blanco.png?raw=true";
+  document.getElementById("playerHeadOne").innerHTML = "";
+  document.getElementById("playerHeadTwo").innerHTML = "";
+  document.getElementById("playerHeadThree").innerHTML = "";
+  document.getElementById("tableHead").innerHTML = "";
+  google.script.run.withFailureHandler(function(err){console.log(err);}).withSuccessHandler(function(res){
+  
+  //code for doing stuff when data is returned
+  
+  
+  
+  }).myFunction(0,0,9);
+  }
+  }
+  
+  
+  // function starts google apps script function for checking for players every second until cancel is pressed
+  function recheck(){
+  if (loop == 1){
+  find.innerHTML = "CANCEL";
+  document.getElementById("playerHeadOne").innerHTML = tyoe;
+  document.getElementById("playerHeadTwo").innerHTML = "Searching...";
+  document.getElementById("playerHeadThree").innerHTML = "Searching...";
+  document.getElementById("tableHead").innerHTML = "Finding Players...";
+  // wait until myFunction returns other players to battle 
+ 
+  google.script.run.withFailureHandler(function (err){ console.log(err);}).withSuccessHandler(function (res){
+  
+  
+  if (res != "GO!!!" && res != "not enough players"){
+  document.getElementById("playerHeadTwo").innerHTML = res[0];
+  document.getElementById("playerHeadThree").innerHTML = res[1];
+  document.getElementById("tableHead").innerHTML = "Match Found!";
+  google.script.run.myFunction(tyoe,0,8);
+  loop = 0;
+  setTimeout(transition,3000,"to Game");
+  }
+
+  
+  }).myFunction(tyoe,0,6);
+  
+  }
+  }
+  
+  
+  function search(){
+  if (find.innerHTML == "FIND A MATCH"){
+  loop = 1;
+  var timer = setInterval(recheck,1000);
+  }
+  else{
+  clearInterval(timer);
+  loop = 0;
+  document.getElementById("playerHeadOne").innerHTML = "";
+  document.getElementById("playerHeadTwo").innerHTML = "";
+  document.getElementById("playerHeadThree").innerHTML = "";
+  document.getElementById("tableHead").innerHTML = "Match Play Table";
+  find.innerHTML = "FIND A MATCH";
+  google.script.run.myFunction(tyoe,0,7);
+  }
+  }
+  
   
   
   </script>
